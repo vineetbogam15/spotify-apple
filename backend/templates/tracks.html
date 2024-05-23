@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlist Tracks</title>
+</head>
+<body>
+    <h1>Playlist Tracks</h1>
+    <ul>
+        {% for track in tracks %}
+            <li>{{ track.name }} - {% for artist in track.artists %}{{ artist }}{% if not loop.last %}, {% endif %}{% endfor %}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
