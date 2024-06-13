@@ -2,15 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Playlist Tracks</title>
+    <title>Track Information</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>Playlist Tracks</h1>
+    <h1>Track Information</h1>
     <ul>
         {% for track in tracks %}
-            <li>{{ track.name }} - {% for artist in track.artists %}{{ artist }}{% if not loop.last %}, {% endif %}{% endfor %}</li>
+        <li>{{ track.name }} by {{ track.artists }} (Tempo: {{ track.tempo }}, Energy: {{ track.energy }}, Danceability: {{ track.danceability }}, Mood: {{ track.mood }})</li>
         {% endfor %}
     </ul>
+    
+    <h2>Visualization</h2>
+    <canvas id="chart"></canvas>
+
+    <script>
+        fetch('/data')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('chart').getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(track => track.track_name),
+                        datasets: [
+                            {
+                                label: 'Tempo',
+                                data: data.map(track => track.tempo),
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Energy',
+                                data: data.map(track => track.energy),
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Danceability',
+                                data: data.map(track => track.danceability),
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+    </script>
 </body>
 </html>
